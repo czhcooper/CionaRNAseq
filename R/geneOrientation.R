@@ -16,21 +16,6 @@ geneOrientation<-function(data,Orientation=c("HH","HT","TT"),maxDistance=1000,mi
   require(dplyr)
 
 
-  # make a slide window function
-  slidingwindow <- function(df, size){
-    df <- data.frame(df)
-    rownames(df) <- seq_len(nrow(df))
-    windows <- alply(1:(nrow(df)-size+1), 1, function(x){c(x:(x+size-1))})
-
-    # For each window, apply the function to the subset of indices
-    outmat <- lapply(windows,
-                     function(indices){
-                       subset(df, as.numeric(rownames(df)) %in% indices)})
-
-    # Sort the output into order of data frame rows
-  }
-
-
   #identify head-to-hail orientation
   if(Orientation=="HH"){
     aa<- data %>% arrange(Chr,Start)
@@ -96,4 +81,29 @@ geneOrientation<-function(data,Orientation=c("HH","HT","TT"),maxDistance=1000,mi
   }
 
 
+}
+
+##' @title A slide window function
+##' @description Sliding window over a data frame.
+##' @param df Input data frame.
+##' @param size Window size. One row, two rows, three rows... etc.
+##' @return Return a list contains each window.
+##' @examples
+##' test<-slidingwindow(df,2)
+##' @author Chen Zaohuang
+##' @export
+
+
+# make a slide window function
+slidingwindow <- function(df, size){
+  df <- data.frame(df)
+  rownames(df) <- seq_len(nrow(df))
+  windows <- alply(1:(nrow(df)-size+1), 1, function(x){c(x:(x+size-1))})
+
+  # For each window, apply the function to the subset of indices
+  outmat <- lapply(windows,
+                   function(indices){
+                     subset(df, as.numeric(rownames(df)) %in% indices)})
+
+  # Sort the output into order of data frame rows
 }

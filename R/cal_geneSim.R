@@ -11,11 +11,12 @@
 ##' @examples
 ##' cal_geneSim("KY.Chr1.1","KY.Chr1.1000")
 ##' @author Chen Zaohuang
+##' @import topGO
+##' @import GOSim
 ##' @export
 
 cal_geneSim<-function(gene1,gene2,geneID2GO=KYgeneID2GO,simFun=c("Resnik","Lin","JiangConrath","relevance"),geneFun=c("mean","max","simAvg","simMax","simMin"),category="BP",return=F){
-  require(topGO)
-  require(GOSim)
+
   simFun<-match.arg(simFun,choices = c("Resnik","Lin","JiangConrath","relevance"))
   geneFun<-match.arg(geneFun,choices = c("mean","max","simAvg","simMax","simMin"))
 
@@ -45,27 +46,21 @@ cal_geneSim<-function(gene1,gene2,geneID2GO=KYgeneID2GO,simFun=c("Resnik","Lin",
 
       }
 
-
       unique(gene1.GO)->gene1.GO
       unique(gene2.GO)->gene2.GO
-
 
       if ( length(gene1.GO)>0 & length(gene2.GO) >0 ){
 
       }  else { return(NA)}
 
-
       df<-matrix(ncol = length(gene2.GO),nrow = length(gene1.GO))
       colnames(df)<-gene2.GO
       rownames(df)<-gene1.GO
 
-
       for (i in 1:length(gene1.GO)){
         for(j in 1:length(gene2.GO)){
-
           gosim<-getTermSim(c(gene1.GO[i],gene2.GO[j]),method = simFun,verbose = FALSE)
           df[i,j]<-gosim[upper.tri(gosim)]
-
         }
       }
       if(geneFun=="mean"){
@@ -87,7 +82,7 @@ cal_geneSim<-function(gene1,gene2,geneID2GO=KYgeneID2GO,simFun=c("Resnik","Lin",
       }
     } else if (!(all(c(gene1,gene2) %in% names(geneID2GO))) & return==T ){
       return(NA)
-    } else {stop("Not all genes have GO terms")}
+    } else {stop ("Not all genes have GO terms") }
 
 
 
